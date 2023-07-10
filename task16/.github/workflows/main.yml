@@ -1,0 +1,86 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push API Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./task16/api
+          push: true
+          tags: ${{ secrets.DOCKER_IMAGE_TAG }}/api:latest
+
+      - name: Build and push Web UI Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./task16/webui
+          push: true
+          tags: ${{ secrets.DOCKER_IMAGE_TAG }}/webui:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: |
+          cd ./task18
+          terraform init
+
+      - name: Terraform Apply
+        id: terraform
+        run: |
+          cd ./task18
+          terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Create inventory file
+        run: |
+          IP_ADDRESS=$(cat instance_ip.txt)
+          echo "[STAGING_SERVERS_WEB]" > ./task16/deploy/inventory.ini
+          echo "$IP_ADDRESS ansible_user=ubuntu" >> ./task16/deploy/inventory.ini        
+
+      - name: Deploy containers to target machine
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+        run: ansible-playbook -i ./task16/deploy/inventory.ini ./task16/deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"

@@ -1,0 +1,48 @@
+---
+- name: Deploy API and Web UI containers
+  hosts: STAGING_SERVERS_WEB
+  become: yes
+  gather_facts: no
+
+  pre_tasks:
+    - name: Wait for instance to become reachable
+      wait_for_connection:
+        delay: 30
+        timeout: 300
+
+    - name: Gathering Facts
+      setup:
+
+  tasks:
+    - name: Update APT package cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Docker
+      ansible.builtin.shell:
+        cmd: curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+        creates: /usr/bin/docker
+
+    - name: Ensure Docker is running
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Deploy API container
+      docker_container:
+        name: api
+        image: simsti97/api:latest
+        state: started
+        recreate: yes
+        ports:
+          - "80:80"
+
+    - name: Deploy Web UI container
+      docker_container:
+        name: webui
+        image: simsti97/webui:latest
+        state: started
+        recreate: yes
+        ports:
+          - "8080:80"
