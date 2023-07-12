@@ -6,12 +6,10 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, windows]
+    runs-on: [self-hosted]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        submodules: false  # Disable submodule checkout
     
     - name: Start Minikube
       run: |
@@ -34,6 +32,4 @@ jobs:
 
     - name: Deploy Helm Chart
       run: |
-        helm upgrade --install fullstack ./task26_helm_cicd/fullstack --namespace default --debug
-      shell: bash
-
+        helm install fullstack ./task25_helm_local/fullstack
