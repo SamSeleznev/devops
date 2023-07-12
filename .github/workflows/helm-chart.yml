@@ -34,5 +34,6 @@ jobs:
 
     - name: Deploy Helm Chart
       run: |
-        helm upgrade --install fullstack ./task26_helm_cicd/fullstack --namespace default -v 3
+        helm upgrade --install fullstack ./task26_helm_cicd/fullstack --namespace default --debug
       shell: bash
+
