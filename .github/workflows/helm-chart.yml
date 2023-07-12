@@ -33,5 +33,5 @@ jobs:
         --set env.DB_NAME=${{ secrets.DB_NAME }} \
         --set env.DB_PORT=${{ secrets.DB_PORT }} \
         --set env.AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-        --set env.AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        --set env.AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}  -v 3
       shell: bash
