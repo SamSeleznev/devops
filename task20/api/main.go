@@ -125,7 +125,16 @@ func main() {
 	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", dbUser, dbPass, dbName, dbHost)
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Error connecting to database: %v", err)}
+		log.Fatalf("Error connecting to database: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS ec2_instances (
+		id TEXT PRIMARY KEY
+	);`)
+	if err != nil {
+		log.Fatalf("Failed to create table: %v", err)
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/api/hello", handlerHello)
