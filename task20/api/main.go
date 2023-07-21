@@ -18,6 +18,13 @@ import (
 
 var db *sql.DB
 
+func ensureTableExists() error {
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS ec2_instances (
+		id TEXT PRIMARY KEY
+	);`)
+	return err
+}
+
 func handlerHello(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		Name string `json:"name"`
@@ -34,6 +41,11 @@ func handlerHello(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerCreateEC2Instance(w http.ResponseWriter, r *http.Request) {
+	if err := ensureTableExists(); err != nil {
+		http.Error(w, "Failed to create table: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String("ap-northeast-2"),
 	})
@@ -79,6 +91,11 @@ func handlerCreateEC2Instance(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerTerminateEC2Instance(w http.ResponseWriter, r *http.Request) {
+	if err := ensureTableExists(); err != nil {
+		http.Error(w, "Failed to create table: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	var data struct {
 		InstanceId string `json:"instanceId"`
 	}
@@ -112,7 +129,7 @@ func handlerTerminateEC2Instance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("Instance terminated successfully!"))
+	w.Write([]byte("Instance terminated successfully!!!"))
 }
 
 func main() {
@@ -122,17 +139,10 @@ func main() {
 	dbName := os.Getenv("DB_NAME")
 	dbHost := os.Getenv("DB_HOST")
 
-	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", dbUser, dbPass, dbName, dbHost)
+	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=require", dbUser, dbPass, dbName, dbHost)
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
-	}
-
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS ec2_instances (
-		id TEXT PRIMARY KEY
-	);`)
-	if err != nil {
-		log.Fatalf("Failed to create table: %v", err)
 	}
 
 	mux := http.NewServeMux()
