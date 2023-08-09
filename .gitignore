@@ -3,3 +3,5 @@ task20/configmap.yaml
 task25_helm_local/fullstack/templates/postgres-secret.yaml
 task24_k8s/postgres-secret.yaml
 task26_helm_cicd/fullstack/templates/postgres-secret.yaml
+task30_tf_aws/.terraform/providers/registry.terraform.io/hashicorp/aws/5.11.0/windows_386/terraform-provider-aws_v5.11.0_x5.exe
+task30_tf_aws/.terraform.lock.hcl
