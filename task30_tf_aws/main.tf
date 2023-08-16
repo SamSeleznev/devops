@@ -294,7 +294,7 @@ resource "aws_appautoscaling_policy" "web_svc_scale_in" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "web_svc_scale_up" {
-  alarm_name          = "api-cpu-utilization-high"
+  alarm_name          = "web-cpu-utilization-high"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
@@ -312,7 +312,7 @@ resource "aws_cloudwatch_metric_alarm" "web_svc_scale_up" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "web_svc_scale_down" {
-  alarm_name          = "api-cpu-utilization-low"
+  alarm_name          = "web-cpu-utilization-low"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"

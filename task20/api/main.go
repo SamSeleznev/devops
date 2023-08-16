@@ -60,7 +60,7 @@ func handlerCreateEC2Instance(w http.ResponseWriter, r *http.Request) {
 		InstanceType: aws.String("t2.micro"),
 		MinCount:     aws.Int64(1),
 		MaxCount:     aws.Int64(1),
-		SecurityGroupIds: aws.StringSlice([]string{"sg-02aecc7bf2b1840dc",}),
+		SecurityGroupIds: aws.StringSlice([]string{"sg-04882473cf1ebd81d",}),
 		KeyName: aws.String("id_rsa"),
 		TagSpecifications: []*ec2.TagSpecification{
 			{
