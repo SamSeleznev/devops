@@ -119,7 +119,7 @@ resource "aws_route53_record" "web" {
 resource "aws_ecs_service" "api_svc" {
   name            = "api_svc"
   cluster         = "ECS-EC2"
-  task_definition = "api:20"
+  task_definition = "api:21"
   desired_count   = 1
   launch_type     = "FARGATE"
 
