@@ -1,3 +1,0 @@
-CREATE TABLE IF NOT EXISTS ec2_instances (
-  id TEXT PRIMARY KEY
-);
