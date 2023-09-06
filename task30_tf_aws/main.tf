@@ -119,7 +119,7 @@ resource "aws_route53_record" "web" {
 resource "aws_ecs_service" "api_svc" {
   name            = "api_svc"
   cluster         = "ECS-EC2"
-  task_definition = "api:21"
+  task_definition = "api:23"
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -327,4 +327,26 @@ resource "aws_cloudwatch_metric_alarm" "web_svc_scale_down" {
   }
 
   alarm_actions = [aws_appautoscaling_policy.web_svc_scale_in.arn]
+}
+#aws_elasticache 
+resource "aws_elasticache_replication_group" "redis" {
+  automatic_failover_enabled  = true
+  multi_az_enabled            = true
+  preferred_cache_cluster_azs = ["ap-northeast-2a", "ap-northeast-2b"]
+  replication_group_id        = "redis"
+  description                 = "redis description"
+  node_type                   = "cache.t2.micro"
+  num_cache_clusters          = 2
+  parameter_group_name        = "default.redis7"
+  port                        = 6379
+
+  subnet_group_name    = "redis-subnet" 
+
+  # Security group settings
+  security_group_ids = ["sg-03aba3eabcb91cd5a"]
+
+  # Tags (optional)
+  tags = {
+    Name = "MyRedisCluster"
+  }
 }
