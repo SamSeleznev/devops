@@ -20,7 +20,7 @@ import (
 
 var (
 	db          *sql.DB
-	redisClient *redis.Client
+	redisClient *redis.Client //nolint
 )
 
 func ensureTableExists() error {
@@ -30,7 +30,7 @@ func ensureTableExists() error {
 	return err
 }
 func initRedisClient() {
-	redisClient = redis.NewClient(&redis.Options{
+	redisClient = redis.NewClient(&redis.Options{ //nolint
 		Addr: "redis.tkkszs.ng.0001.apn2.cache.amazonaws.com:6379",
 		DB:   0,
 	})
