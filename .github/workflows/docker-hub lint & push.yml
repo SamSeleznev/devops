@@ -12,17 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Install linter
-        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-      - name: Install dependencies
-        run: |
-          cd task31_redis/api
-          go mod download
-      - name: Run linter
-        run: ~/go/bin/golangci-lint run ./task31_redis/api/main.go
     
-    if: ${{ always() }}  
+    - uses: actions/checkout@v2
+
+    - uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - run: go clean
+    
+    - run: go build
+    
+    - name: Install linter
+      run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+    - name: Install dependencies  
+      run: go mod download
+
+    - name: Run linter
+      run: ~/go/bin/golangci-lint run ./task31_redis/api/main.go
+    
+    if: ${{ always() }}
 
   build_and_push:
   
