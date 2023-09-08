@@ -21,9 +21,6 @@ jobs:
     - name: Change directory to your Go project
       run: cd ./task31_redis/api
 
-    - name: Download Go dependencies
-      run: go get -d ./...
-
     - name: Run linter
       run: ~/go/bin/golangci-lint run ./task31_redis/api/*.go
     
