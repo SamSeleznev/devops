@@ -17,15 +17,9 @@ jobs:
     
     - name: Install linter
       run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-      
-    - name: Change directory
-      run: cd ./task31_redis/api
 
     - name: Run linter
       run: ~/go/bin/golangci-lint run ./task31_redis/api/*.go
-      
-    - name: Notify success
-      run: echo "Linting completed successfully. Your code is in good shape."
     
     if: ${{ always() }}
 
