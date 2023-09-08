@@ -1,0 +1,16 @@
+run:
+  tests: false # disable test files check
+
+linters:
+  enable:
+    - deadcode
+    - gofmt
+    - goimports
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
