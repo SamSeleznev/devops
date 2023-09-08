@@ -2,8 +2,7 @@ name: docker-hub Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
 
