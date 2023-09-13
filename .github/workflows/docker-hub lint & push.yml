@@ -17,9 +17,6 @@ jobs:
     
     - name: Install linter
       run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-      
-    - name: Change directory to your Go project
-      run: cd ./task31_redis/api
 
     - name: Run linter
       run: ~/go/bin/golangci-lint run ./task31_redis/api/*.go
