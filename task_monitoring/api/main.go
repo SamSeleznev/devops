@@ -15,7 +15,8 @@ import (
     "github.com/aws/aws-sdk-go/service/ec2"
     "github.com/go-redis/redis/v8"
     _ "github.com/lib/pq"
-    "github.com/prometheus/client_golang/prometheus/promhttp"
+	"./metrics"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
     "github.com/rs/cors"
 )
 
