@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 	"time"
-
+	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -21,7 +21,53 @@ import (
 var (
 	db          *sql.DB
 	redisClient *redis.Client //nolint
+	cwClient *cloudwatch.CloudWatch
 )
+func init() {
+	sess := session.Must(session.NewSession())
+	cwClient = cloudwatch.New(sess)
+  }
+  
+  // Функции для записи метрик 
+  
+  func RecordRequestCount(requestType string) {
+
+	dimensions := []*cloudwatch.Dimension{
+	  {Name: aws.String("RequestType"), Value: aws.String(requestType)}, 
+	}
+	
+	cwClient.PutMetricData(&cloudwatch.PutMetricDataInput{
+	  MetricData: []*cloudwatch.MetricDatum{
+		{
+		  MetricName: aws.String("RequestCount"),
+		  Dimensions: dimensions, 
+		  Unit: aws.String("Count"),
+		  Value: aws.Float64(1.0),
+		},
+	  },
+	})
+  
+  }
+  
+  func RecordResponseTime(endpoint string, responseTime float64) {
+
+	dimensions := []*cloudwatch.Dimension{
+	  {Name: aws.String("Endpoint"), Value: aws.String(endpoint)},
+	}
+  
+	cwClient.PutMetricData(&cloudwatch.PutMetricDataInput{
+	  MetricData: []*cloudwatch.MetricDatum{
+		{  
+		  MetricName: aws.String("ResponseTime"),
+		  Dimensions: dimensions,
+		  Unit: aws.String("Milliseconds"),
+		  Value: aws.Float64(responseTime),
+		},  
+	  },
+	})
+  
+  }
+  
 
 func ensureTableExists() error {
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS ec2_instances (
@@ -36,6 +82,7 @@ func initRedisClient() {
 	})
 }
 func handlerHello(w http.ResponseWriter, r *http.Request) {
+	RecordRequestCount("GET")
 	var data struct {
 		Name string `json:"name"`
 	}
@@ -56,9 +103,11 @@ func handlerHello(w http.ResponseWriter, r *http.Request) {
 	message := fmt.Sprintf("Hello, %s!", data.Name)
 	redisClient.Set(context.Background(), "hello:"+data.Name, message, time.Minute)
 	fmt.Fprintln(w, message)
+	RecordResponseTime("/hello", 342.23) 
 }
 
 func handlerCreateEC2Instance(w http.ResponseWriter, r *http.Request) {
+	RecordRequestCount("POST")
 	if err := ensureTableExists(); err != nil {
 		http.Error(w, "Failed to create table: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -109,6 +158,8 @@ func handlerCreateEC2Instance(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	RecordResponseTime("/create_ec2", 521.34)
+
 }
 
 func handlerTerminateEC2Instance(w http.ResponseWriter, r *http.Request) {

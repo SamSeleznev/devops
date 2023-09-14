@@ -119,7 +119,7 @@ resource "aws_route53_record" "web" {
 resource "aws_ecs_service" "api_svc" {
   name            = "api_svc"
   cluster         = "ECS-EC2"
-  task_definition = "api:23"
+  task_definition = "api:25"
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -225,7 +225,7 @@ resource "aws_cloudwatch_metric_alarm" "api_svc_scale_down" {
 resource "aws_ecs_service" "web_svc" {
   name            = "web_svc"
   cluster         = "ECS-EC2"
-  task_definition = "web:5"
+  task_definition = "web:6"
   desired_count   = 1
   launch_type     = "FARGATE"
 

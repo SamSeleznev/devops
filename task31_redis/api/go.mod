@@ -3,7 +3,7 @@ module main.go
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.44.271
+	github.com/aws/aws-sdk-go v1.45.9
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/lib/pq v1.10.9
 	github.com/rs/cors v1.9.0
