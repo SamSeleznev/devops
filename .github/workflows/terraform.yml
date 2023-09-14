@@ -21,7 +21,9 @@ jobs:
       run: |
         cd ./task30_tf_aws
         terraform init
-
+    - name: Terraform Validate
+      run: terraform validate ./task30_tf_aws
+      
     - name: Terraform Plan
       id: terraform
       run: |
@@ -31,5 +33,3 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     
-    - name: Terraform Validate
-      run: terraform validate ./task30_tf_aws
