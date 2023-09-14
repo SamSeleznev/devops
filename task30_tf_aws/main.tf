@@ -340,7 +340,7 @@ resource "aws_elasticache_replication_group" "redis" {
   parameter_group_name        = "default.redis7"
   port                        = 6379
 
-  subnet_group_name    = "redis-subnet" 
+  subnet_group_name = "redis-subnet"
 
   # Security group settings
   security_group_ids = ["sg-03aba3eabcb91cd5a"]
