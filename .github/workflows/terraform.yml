@@ -10,7 +10,9 @@ jobs:
     steps:
     
     - uses: actions/checkout@v2
-    
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
     - name: Terraform Format
       run: terraform fmt -check ./task30_tf_aws
     
