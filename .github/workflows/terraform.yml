@@ -27,6 +27,9 @@ jobs:
       run: |
         cd ./task30_tf_aws
         terraform apply -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     
     - name: Terraform Validate
       run: terraform validate ./task30_tf_aws
