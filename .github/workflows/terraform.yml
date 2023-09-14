@@ -1,0 +1,21 @@
+name: Terraform Validate
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - uses: actions/checkout@v2
+    
+    - name: Terraform Format
+      run: terraform fmt -check ./task30_tf_aws
+    
+    - name: Terraform Init
+      run: terraform init ./task30_tf_aws
+    
+    - name: Terraform Validate
+      run: terraform validate ./task30_tf_aws
