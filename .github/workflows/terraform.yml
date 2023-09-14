@@ -26,7 +26,9 @@ jobs:
         terraform init
         
     - name: Terraform Validate
-      run: terraform validate ./task30_tf_aws
+      run: |  
+        cd task30_tf_aws 
+        terraform validate
       
     - name: Terraform Plan
       id: terraform
