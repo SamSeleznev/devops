@@ -13,11 +13,20 @@ jobs:
 
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v1
+      
     - name: Terraform Format
       run: terraform fmt -check ./task30_tf_aws
     
     - name: Terraform Init
-      run: terraform init ./task30_tf_aws
+      run: |
+        cd ./task30_tf_aws
+        terraform init
+
+    - name: Terraform Plan
+      id: terraform
+      run: |
+        cd ./task30_tf_aws
+        terraform apply -auto-approve
     
     - name: Terraform Validate
       run: terraform validate ./task30_tf_aws
